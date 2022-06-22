@@ -41,12 +41,13 @@ class GCPRaySecretOperator(RaySecretOperator):
 
         try:
             response = self.__client.access_secret_version(name=secret_name)
-
             secret = response.payload.data.decode("UTF-8")
             response.payload.data = None
             return RaySecret(
                 secret_name=secret_name, secret=secret, ttl=ttl, metadata=response.payload
             )
+        except UnicodeDecodeError:
+            raise RuntimeError("Secret is not a valid string")
         except ClientError as e:
             raise e
 
