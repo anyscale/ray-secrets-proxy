@@ -45,20 +45,20 @@ class AWSRaySecretOperator(RaySecretOperator):
                 raise e
             else:
                 raise e
+
+        # Decrypts secret using the associated KMS key.
+        # Depending on whether the secret is a string or binary, one of these fields will be populated.
+        if "SecretString" in response:
+            secret = response.pop("SecretString")
         else:
-            # Decrypts secret using the associated KMS key.
-            # Depending on whether the secret is a string or binary, one of these fields will be populated.
-            if "SecretString" in response:
-                secret = response.pop("SecretString")
-            else:
-                secret = base64.b64decode(response.pop("SecretBinary"))
+            secret = base64.b64decode(response.pop("SecretBinary"))
 
-            secret_name = response.pop("Name")
-            response.pop("ResponseMetadata", None)
+        secret_name = response.pop("Name")
+        response.pop("ResponseMetadata", None)
 
-            return RaySecret(
-                secret_name=secret_name, secret=secret, ttl=ttl, metadata=response
-            )
+        return RaySecret(
+            secret_name=secret_name, secret=secret, ttl=ttl, metadata=response
+        )
 
     def list_secrets(self, filter=None) -> List[str]:
         try:
