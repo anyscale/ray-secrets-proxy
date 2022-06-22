@@ -4,7 +4,6 @@ from ray_secret import RaySecret
 from ray_secret_operator import  RaySecretOperator
 
 import boto3
-import base64
 from botocore.exceptions import ClientError
 
 
@@ -49,9 +48,9 @@ class AWSRaySecretOperator(RaySecretOperator):
         # Decrypts secret using the associated KMS key.
         # Depending on whether the secret is a string or binary, one of these fields will be populated.
         if "SecretString" in response:
-            secret = response.pop("SecretString")
+            secret = response.pop("SecretString").encode()
         else:
-            secret = base64.b64decode(response.pop("SecretBinary"))
+            secret = response.pop("SecretBinary")
 
         secret_name = response.pop("Name")
         response.pop("ResponseMetadata", None)
