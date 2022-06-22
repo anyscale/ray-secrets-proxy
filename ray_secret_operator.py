@@ -7,10 +7,14 @@ import boto3
 from google.oauth2 import service_account
 import base64
 from botocore.exceptions import ClientError
+import warnings
 
 from google.cloud import secretmanager
 from google.api_core.exceptions import ClientError
 
+import logging
+
+logger = logging.getLogger(__file__)
 
 @DeveloperAPI
 class RaySecretOperator:
@@ -64,7 +68,7 @@ class AWSRaySecretOperator(RaySecretOperator):
                 # Deal with the exception here, and/or rethrow at your discretion.
                 raise e
             else:
-                raise e
+                warnings.warn( e )
         else:
             # Decrypts secret using the associated KMS key.
             # Depending on whether the secret is a string or binary, one of these fields will be populated.

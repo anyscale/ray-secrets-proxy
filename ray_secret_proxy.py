@@ -4,6 +4,10 @@ from typing import Any, List, Dict
 from time import time
 import ray
 
+import logging
+
+logger = logging.getLogger(__file__)
+
 @ray.remote
 class RaySecretProxy:
     def __init__(self, ray_secret_operator: RaySecretOperator, default_ttl=-1) -> None:
@@ -37,8 +41,10 @@ class RaySecretProxy:
         ttl = self.default_ttl if ttl is None else ttl
 
         if ttl != 0 and (secret_name in self.__vault and not self.__vault[secret_name].is_expired()):
+            logger.info(f"Cache hit: Secret {secret_name} retrieved from cache")
             secret = self.__vault[secret_name]
         else:            
+            logger.info(f"Cache miss: Secret {secret_name} retrieved from source")
             secret = self.__ray_secret_operator.get_secret(secret_name=secret_name, ttl=ttl, **kwargs)
 
         if self.default_ttl != 0 and ttl != 0:
