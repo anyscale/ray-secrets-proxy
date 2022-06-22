@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Dict, List, Optional, Tuple
 from ray.util.annotations import PublicAPI
 from ray_secret import RaySecret
 from ray_secret_operator import  RaySecretOperator
@@ -30,7 +30,7 @@ class GCPRaySecretOperator(RaySecretOperator):
             self.__client = secretmanager.SecretManagerServiceClient()
         return
 
-    def get_secret(self, secret_name: str, ttl=-1, **kwargs) -> RaySecret:
+    def _fetch(self, secret_name: str, **kwargs) -> Tuple[bytes, Dict]:
         version = kwargs.get("version", "latest")
 
         if not secret_name.startswith("projects/"):
@@ -43,9 +43,7 @@ class GCPRaySecretOperator(RaySecretOperator):
             response = self.__client.access_secret_version(name=secret_name)
             secret = response.payload.data
             response.payload.data = None
-            return RaySecret(
-                secret_name=secret_name, secret=secret, ttl=ttl, metadata=response.payload
-            )
+            return secret, response.payload
         except ClientError as e:
             raise e
 

@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List, Tuple
 from ray.util.annotations import PublicAPI
 from ray_secret import RaySecret
 from ray_secret_operator import  RaySecretOperator
@@ -17,7 +17,7 @@ class AWSRaySecretOperator(RaySecretOperator):
         self.__client = boto3.client("secretsmanager", **self.__credentials)
         return
 
-    def get_secret(self, secret_name: str, ttl=-1, **kwargs) -> RaySecret:
+    def _fetch(self, secret_name: str, **kwargs) -> Tuple[bytes, Dict]:
         try:
             kwargs["SecretId"] = secret_name
             response = self.__client.get_secret_value(**kwargs)
@@ -55,9 +55,7 @@ class AWSRaySecretOperator(RaySecretOperator):
         secret_name = response.pop("Name")
         response.pop("ResponseMetadata", None)
 
-        return RaySecret(
-            secret_name=secret_name, secret=secret, ttl=ttl, metadata=response
-        )
+        return secret, response
 
     def list_secrets(self, filter=None) -> List[str]:
         try:
