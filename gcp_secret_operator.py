@@ -41,8 +41,7 @@ class GCPRaySecretOperator(RaySecretOperator):
 
         try:
             response = self.__client.access_secret_version(name=secret_name)
-
-            secret = response.payload.data.decode("UTF-8")
+            secret = response.payload.data
             response.payload.data = None
             return RaySecret(
                 secret_name=secret_name, secret=secret, ttl=ttl, metadata=response.payload
