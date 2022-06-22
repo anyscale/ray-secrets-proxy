@@ -18,7 +18,7 @@ class RaySecretOperator:
 
     def get_secret(self, secret_name: str, ttl: Optional[int] = None, **kwargs) -> RaySecret:
         """Gets a RaySecret from the underlying provider.."""
-        secret_bytes, metadata = self.fetch(secret_name, kwargs)
+        secret_bytes, metadata = self._fetch(secret_name, **kwargs)
         return RaySecret(
             secret_name=secret_name, secret=secret_bytes, ttl=ttl, metadata=metadata
         )
