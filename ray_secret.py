@@ -5,7 +5,7 @@ import logging
 logger = logging.getLogger(__file__)
 
 class RaySecret:
-    def __init__(self, secret_name, secret, ttl=-1, metadata={}) -> None:
+    def __init__(self, secret_name, secret: str, ttl=-1, metadata={}) -> None:
         now = int(time())
         self.create_timestamp = now
         self.secret_name = secret_name
@@ -22,7 +22,7 @@ class RaySecret:
     def __repr__(self):
         return str(self)
 
-    def value(self):
+    def value(self) -> str:
         now = int(time())
         logger.info(f"{now}: Secret {self.secret_name} accessed")
         return Fernet(self.__key).decrypt(self.__secret).decode()
