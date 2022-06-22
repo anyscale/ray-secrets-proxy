@@ -1,0 +1,5 @@
+cryptography
+ray
+boto3
+google-cloud-secret-manager
+google-oauth
