@@ -13,16 +13,17 @@ class RaySecretOperator:
         raise NotImplementedError
 
     def _fetch(self, secret_name: str, **kwargs) -> Tuple[bytes, Dict]:
-        """Gets a secret from the underlying provider"""
+        """Gets a secret from the underlying provider."""
         raise NotImplementedError
 
     def get_secret(self, secret_name: str, ttl: Optional[int] = None, **kwargs) -> RaySecret:
-        """Gets a secret value and returns RaySecret containing the ttl"""
+        """Gets a RaySecret from the underlying provider.."""
         secret_bytes, metadata = self.fetch(secret_name)
         return RaySecret(
             secret_name=secret_name, secret=secret_bytes, ttl=ttl, metadata=metadata
         )
 
     def list_secrets(self, filter=Any) -> List[str]:
+        """Lists available secret names (not values)."""
         raise NotImplementedError
 
