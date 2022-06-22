@@ -11,12 +11,12 @@ from google.api_core.exceptions import ClientError
 
 @PublicAPI
 class GCPRaySecretOperator(RaySecretOperator):
-    def __init__(self, project_id: Optional[str] = None, **kwargs) -> None:
-        if project_id is None:
-            _, project_id = google.auth.default()
-            if project_id is None:
+    def __init__(self, project_name: Optional[str] = None, **kwargs) -> None:
+        if project_name is None:
+            _, project_name = google.auth.default()
+            if project_name is None:
                 raise RuntimeError("Could not automatically determine a project ID, please explicitly pass in.")
-        self.__project_id = project_id
+        self.__project_name = project_name
         self.__credentials = kwargs
         return
 
@@ -34,7 +34,7 @@ class GCPRaySecretOperator(RaySecretOperator):
         version = kwargs.get("version", "latest")
 
         if not secret_name.startswith("projects/"):
-            secret_name = f"projects/{self.__project_id}/secrets/{secret_name}"
+            secret_name = f"projects/{self.__project_name}/secrets/{secret_name}"
 
         if "/versions/" not in secret_name:
             secret_name = f"{secret_name}/versions/{version}"
@@ -51,7 +51,7 @@ class GCPRaySecretOperator(RaySecretOperator):
             raise e
 
     def list_secrets(self, filter=None) -> List[str]:
-        parent = f"projects/{self.__project_id}"
+        parent = f"projects/{self.__project_name}"
 
         try:
             if filter is None:
