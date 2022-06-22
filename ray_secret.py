@@ -19,6 +19,9 @@ class RaySecret:
     def __str__(self):
         return self.secret_name + ": ***********"
 
+    def __repr__(self):
+        return str(self)
+
     def value(self):
         now = int(time())
         logger.info(f"{now}: Secret {self.secret_name} accessed")
