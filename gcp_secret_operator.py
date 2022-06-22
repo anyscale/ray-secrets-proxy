@@ -5,12 +5,17 @@ from ray_secret_operator import  RaySecretOperator
 
 from google.oauth2 import service_account
 
+import google.auth
 from google.cloud import secretmanager
 from google.api_core.exceptions import ClientError
 
 @PublicAPI
 class GCPRaySecretOperator(RaySecretOperator):
-    def __init__(self, project_id: str, **kwargs) -> None:
+    def __init__(self, project_id: Optional[str] = None, **kwargs) -> None:
+        if project_id is None:
+            _, project_id = google.auth.default()
+            if project_id is None:
+                raise RuntimeError("Could not automatically determine a project ID, please explicitly pass in.")
         self.__project_id = project_id
         self.__credentials = kwargs
         return
@@ -26,9 +31,9 @@ class GCPRaySecretOperator(RaySecretOperator):
         return
 
     def get_secret(self, secret_name: str, ttl=-1, **kwargs) -> RaySecret:
-        version = "latest" if "version" not in kwargs else kwargs["version"]
+        version = kwargs.get("version", "latest")
 
-        if f"projects/{self.__project_id}/secrets/" not in secret_name:
+        if not secret_name.startswith("projects/"):
             secret_name = f"projects/{self.__project_id}/secrets/{secret_name}"
 
         if "/versions/" not in secret_name:
@@ -40,10 +45,7 @@ class GCPRaySecretOperator(RaySecretOperator):
             secret = response.payload.data.decode("UTF-8")
             response.payload.data = None
             return RaySecret(
-                secret_name=secret_name,
-                secret=secret,
-                ttl=ttl,
-                metadata=response.payload,
+                secret_name=secret_name, secret=secret, ttl=ttl, metadata=response.payload
             )
         except ClientError as e:
             raise e
