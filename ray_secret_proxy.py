@@ -1,5 +1,5 @@
 from ray_secret import RaySecret
-from ray_secret_operator import AWSRaySecretOperator, RaySecretOperator
+from ray_secret_operator import RaySecretOperator
 from typing import Any, List, Dict
 from time import time
 import ray
