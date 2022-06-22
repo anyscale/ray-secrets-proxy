@@ -14,6 +14,9 @@ class RaySecret:
     def __str__(self):
         return self.secret_name + ": ***********"
 
+    def __repr__(self):
+        return str(self)
+
     def value(self):
         return Fernet(self.__key).decrypt(self.__secret).decode()
 
