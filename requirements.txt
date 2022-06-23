@@ -3,3 +3,7 @@ ray
 boto3
 google-cloud-secret-manager
 google-oauth
+
+
+# For development
+pytest

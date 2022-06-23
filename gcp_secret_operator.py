@@ -7,7 +7,7 @@ from google.oauth2 import service_account
 
 import google.auth
 from google.cloud import secretmanager
-from google.api_core.exceptions import ClientError
+from google.api_core.exceptions import ClientError, exception_class_for_http_status
 
 @PublicAPI
 class GCPRaySecretOperator(RaySecretOperator):
@@ -45,7 +45,8 @@ class GCPRaySecretOperator(RaySecretOperator):
             response.payload.data = None
             return secret, response.payload
         except ClientError as e:
-            raise e
+            # Create a new error that doesn't have un-picklable objects
+            raise exception_class_for_http_status(e.code)(e.message)
 
     def list_secrets(self, filter=None) -> List[str]:
         parent = f"projects/{self.__project_name}"
@@ -60,4 +61,5 @@ class GCPRaySecretOperator(RaySecretOperator):
 
             return [secret.name for secret in secret_list]
         except ClientError as e:
-            raise e
+            # Create a new error that doesn't have un-picklable objects
+            raise exception_class_for_http_status(e.code)(e.message)
