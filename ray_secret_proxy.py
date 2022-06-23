@@ -19,12 +19,15 @@ class RaySecretProxy:
 
     def hydrate_cache(self, secret_names: List[str] = None, filter=None) -> None:
         if self.default_ttl == 0:
-            self.__vault = {}
             return
         
         secret_list = secret_names if secret_names is not None else self.list_secrets(filter)
 
-        _ = [self.get_secret(secret_name=secret, ttl=self.default_ttl) for secret in secret_list]
+        for secret in secret_list:
+            try:
+                self.get_secret(secret_name=secret)
+            except Exception:
+                logger.exception(f"Hydrating cache for secret: {secret}")
         return
 
     def purge_cache(self) -> None:
