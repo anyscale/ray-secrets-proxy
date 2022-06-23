@@ -23,6 +23,8 @@ class RaySecret:
         return str(self)
 
     def value(self) -> str:
+        if self.is_expired():
+            logger.warning("Secret is expired, fetch again.")
         return self.raw_value().decode()
 
     def raw_value(self) -> bytes:
