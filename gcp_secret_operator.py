@@ -49,6 +49,7 @@ class GCPRaySecretOperator(RaySecretOperator):
             raise exception_class_for_http_status(e.code)(e.message)
 
     def list_secrets(self, filter=None) -> List[str]:
+        # TODO: add pagination
         parent = f"projects/{self.__project_name}"
 
         try:

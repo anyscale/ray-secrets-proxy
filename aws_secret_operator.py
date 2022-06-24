@@ -58,6 +58,7 @@ class AWSRaySecretOperator(RaySecretOperator):
         return secret, response
 
     def list_secrets(self, filter=None) -> List[str]:
+        # TODO: add pagination
         try:
             if filter is None:
                 secret_list = self.__client.list_secrets()["SecretList"]
