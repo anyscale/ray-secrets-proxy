@@ -61,9 +61,9 @@ class AWSRaySecretOperator(RaySecretOperator):
         # TODO: add pagination
         try:
             if filter is None:
-                secret_list = self.__client.list_secrets()["SecretList"]
+                secret_list = self.__client.list_secrets(MaxResults=100)["SecretList"]
             else:
-                secret_list = self.__client.list_secrets(Filters=filter)["SecretList"]
+                secret_list = self.__client.list_secrets(MaxResults=100, Filters=filter)["SecretList"]
 
             return [secret["Name"] for secret in secret_list]
         except ClientError as e:
