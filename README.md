@@ -1,5 +1,8 @@
 # Ray Secret Proxy
 
+## DISCLAIMER
+The Ray Secret Proxy is not an officially supported project by Ray or Anyscale. 
+
 ## Background
 Credentials are required for almost every application to interact with databases, external APIs, and 3rd party integrations.  Meanwhile, securely assessing, storing, and applying them within application logic poses a risk for potential credential exposure.
 
