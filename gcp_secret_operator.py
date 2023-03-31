@@ -3,8 +3,6 @@ from ray.util.annotations import PublicAPI
 from ray_secret import RaySecret
 from ray_secret_operator import  RaySecretOperator
 
-from google.oauth2 import service_account
-
 import google.auth
 from google.cloud import secretmanager
 from google.api_core.exceptions import ClientError, exception_class_for_http_status
@@ -22,10 +20,7 @@ class GCPRaySecretOperator(RaySecretOperator):
 
     def initialize(self) -> None:
         if "credentials" in self.__credentials:
-            creds = service_account.Credentials.from_service_account_info(
-                self.__credentials["credentials"]
-            )
-            self.__client = secretmanager.SecretManagerServiceClient(credentials=creds)
+            self.__client = secretmanager.SecretManagerServiceClient(credentials=self.__credentials)
         else:
             self.__client = secretmanager.SecretManagerServiceClient()
         return
