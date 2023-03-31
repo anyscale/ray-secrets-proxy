@@ -1,10 +1,10 @@
-from ray_secret import RaySecret
-from ray_secret_operator import RaySecretOperator
 from typing import Any, List, Dict
 from time import time
+import logging
 import ray
 
-import logging
+from .ray_secret import RaySecret
+from .ray_secret_operator import RaySecretOperator
 
 logger = logging.getLogger(__file__)
 
