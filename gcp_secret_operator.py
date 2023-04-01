@@ -4,26 +4,24 @@ from ray_secret import RaySecret
 from ray_secret_operator import  RaySecretOperator
 
 import google.auth
+from google.auth.credentials import Credentials
 from google.cloud import secretmanager
 from google.api_core.exceptions import ClientError, exception_class_for_http_status
 
 @PublicAPI
 class GCPRaySecretOperator(RaySecretOperator):
-    def __init__(self, project_name: Optional[str] = None, **kwargs) -> None:
+    def __init__(self, project_name: Optional[str] = None, credentials: Optional[Credentials] = None,  **client_kwargs) -> None:
         if project_name is None:
             _, project_name = google.auth.default()
             if project_name is None:
                 raise RuntimeError("Could not automatically determine a project ID, please explicitly pass in.")
         self.__project_name = project_name
-        self.__credentials = kwargs
+        self.__credentials = credentials
+        self.__client_kwargs = client_kwargs
         return
 
     def initialize(self) -> None:
-        if "credentials" in self.__credentials:
-            self.__client = secretmanager.SecretManagerServiceClient(credentials=self.__credentials)
-        else:
-            self.__client = secretmanager.SecretManagerServiceClient()
-        return
+        self.__client = secretmanager.SecretManagerServiceClient(credentials=self.__credentials, **self.__client_kwargs)
 
     def _fetch(self, secret_name: str, **kwargs) -> Tuple[bytes, Dict]:
         version = kwargs.get("version", "latest")
