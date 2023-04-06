@@ -1,7 +1,7 @@
 from typing import Dict, List, Optional, Tuple
 from ray.util.annotations import PublicAPI
-from ray_secret import RaySecret
-from ray_secret_operator import  RaySecretOperator
+from .ray_secret import RaySecret
+from .ray_secret_operator import  RaySecretOperator
 
 import google.auth
 from google.auth.credentials import Credentials

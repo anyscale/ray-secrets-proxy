@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional, Tuple
 from ray.util.annotations import DeveloperAPI
-from ray_secret import RaySecret
+from .ray_secret import RaySecret
 
 
 @DeveloperAPI

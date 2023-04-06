@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "raysecretsproxy"
+version = "0.0.2"
+authors = [
+  { name="Dominic Catalano", email="dominic@anyscale.com"},
+  {name="Ian Rodney", email="ilr@anyscale.com" },
+]
+description = "A Ray native mechanism of interacting with cloud-provider secrets management."
+license = {file = "LICENSE"}
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dynamic = ["dependencies"]
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[project.urls]
+"Home Page" = "https://github.com/anyscale/ray-secrets-proxy"
